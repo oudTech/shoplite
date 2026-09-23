@@ -25,4 +25,3 @@ const PRODUCTS = [
   },
 ];
 const formatPrice = (n) => `₦${n.toLocaleString()}`;
-console.log(formatPrice(25000));
