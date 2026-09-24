@@ -1,40 +1,34 @@
-const productGrid= document.getElementById("product-grid");
+const productGrid = document.getElementById("product-grid");
 
 function createProductCard(product) {
-  const card =document.createElement("article"); 
-  card.className = "card-class";
-  card.dataset.id = product.id
-  card.innerHTML = `
-  <img src="${product.image}" alt="${product.name}">
-  <h3>${product.name}</h3>
-  <p>${formatPrice(product.price)}</p>
-  <p>${product.category}</P>
-  `;
-  const image = card.querySelector("img");
-  image.addEventListener("error", () => {
-    image.style.display = "none";
-    const fallback = document.createElement("div");
-    fallback.textContent = "Image unavailable";
-    fallback.className = "image-fallback";
+  const card = document.createElement("article");
+  card.className = "product-card";
+  card.dataset.id = product.id;
 
-    image.parentElement.prepend(fallback);
-  });
+  card.innerHTML = `
+    <img
+      src="${product.image}"
+      alt="${product.name}"
+      onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"
+    />
+    <h3>${product.name}</h3>
+    <p class="category">${product.category}</p>
+    <p class="price">${formatPrice(product.price)}</p>
+  `;
+
   return card;
 }
 
-function renderProducts(products){
-    productGrid.innerHTML="";
+function renderProducts(products) {
+  productGrid.innerHTML = "";
+  if (products.length === 0) {
+    productGrid.innerHTML = `<p class="empty-state">No products found.</p>`;
+    return;
+  }
 
-    if (products.length === 0){
-       productGrid.innerHTML="<p>No products found.</p>"; 
-       return;
-    }
- 
-    for(const product of products){
-        const card = createProductCard(product);
-        productGrid.appendChild(card);
-
-    }
+  products.forEach((product) => {
+    productGrid.appendChild(createProductCard(product));
+  });
 }
 
 renderProducts(PRODUCTS);
