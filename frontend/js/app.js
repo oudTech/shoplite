@@ -43,3 +43,55 @@ function renderProducts(products) {
 }
 
 renderProducts(PRODUCTS);
+
+function populateCategoryDropdown(products) {
+  const categories = [...new Set(products.map(product => product.category))];
+
+  const select = document.getElementById('category-select');
+
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    select.appendChild(option);
+  });
+}
+
+function getFilteredProducts() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  const selectedCategory = document.getElementById('category-select').value;
+
+  return PRODUCTS.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+}
+
+function updateDisplay() {
+  const filtered = getFilteredProducts();
+  renderProducts(filtered);
+}
+
+document.getElementById('search-input').addEventListener('input', updateDisplay);
+document.getElementById('category-select').addEventListener('change', updateDisplay);
+
+populateCategoryDropdown(PRODUCTS);
+renderProducts(PRODUCTS);
+
+function getSortSelection() {
+  return document.getElementById('sort-select').value; // 'low-high' or 'high-low'
+}
+
+function getFilteredAndSortedProducts() {
+  const filtered = getFilteredProducts();
+  const sortOrder = getSortSelection();
+
+  const sorted = [...filtered]; // copy, so we don't mutate the filtered array
+  if (sortOrder === 'low-high') {
+    sorted.sort((a, b) => a.price - b.price);
+  } else if (sortOrder === 'high-low') {
+    sorted.sort((a, b) => b.price - a.price);
+  }
+  return sorted;
+}
