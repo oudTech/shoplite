@@ -1,4 +1,20 @@
 const productGrid = document.getElementById("product-grid");
+productGrid.addEventListener("click", function(event){
+   const button = event.target.closest(".add-to-cart-btn");
+
+   if(!button){
+    return;
+   }
+   const card = button.closest(".product-card");
+
+   const productId = card.dataset.id;
+
+
+   const product = PRODUCTS.find(
+    product => product.id == productId
+   );
+   console.log(product);
+});
 
 function createProductCard(product) {
   const card = document.createElement("article");
@@ -14,6 +30,8 @@ function createProductCard(product) {
     <h3>${product.name}</h3>
     <p class="category">${product.category}</p>
     <p class="price">${formatPrice(product.price)}</p>
+
+    <button class="add-to-cart-btn">Add to Cart</button>
   `;
 
   const image = card.querySelector("img");
