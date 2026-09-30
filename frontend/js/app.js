@@ -13,7 +13,8 @@ productGrid.addEventListener("click", function(event){
    const product = PRODUCTS.find(
     product => product.id == productId
    );
-   console.log(product);
+   addToCart(productId);
+   renderCart();
 });
 
 function createProductCard(product) {
