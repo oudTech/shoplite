@@ -10,17 +10,19 @@
 
 <body>
   <header>
-
+      <button id="cart-open">
+          cart <span id="cart-badge">0</span>
+      </button>
       <nav>
      
-
-
         <a href="#" class="navigation">Home</a>
         <a href="#" class="navigation">Cart</a>
         <a href="#" class="navigation">Checkout</a>
         <a href="#" class="navigation">Profile</a>
         <a href="#" class="navigation">Contact us</a>
       </nav>
+
+    
   </header>
 
 <div class="toolbar">
@@ -30,14 +32,26 @@
     </select>
 </div>
 
+
   <main class="content">
     <section id="product-grid" class="product-grid">
 
     </section>
   </main>
-  
+
+  <div id="cart-overlay" class="cart-overlay"></div>
+    <aside id="cart-panel" class="cart-panel">
+      <button id="cart-close">X close</button>
+      <h2>your cart</h2>
+        <div id="cart-items"></div>
+        <p>subtotal <span id="cart-subtotal">0</span></p>
+    </aside>
+ 
 
   <script src="js/data.js"></script>
+  <script src="js/cart-data.js"></script>
+  <script src="js/cart.js"></script>
   <script src="js/app.js"></script>
+ 
 </body>
 </html>
