@@ -1,18 +1,19 @@
 let CART = [];
-
+let cartNumber = document.getElementById('cart-badge');
 function addToCart(productId) {
   const existingItem = CART.find(item => item.id === productId);
-
   if (existingItem) {
     existingItem.quantity += 1;
+    
   } else {
     CART.push({
       id: productId,
       quantity: 1
     });
   }
-
+  cartNumber.textContent = getCartCount();
   saveCart();
+
 }
 
 function removeFromCart(productId) {
@@ -59,10 +60,21 @@ function saveCart() {
 }
 
 function loadCart() {
-  const savedCart = localStorage.getItem("shoplite-cart");
+  try {
+    const saved = JSON.parse(localStorage.getItem("shoplite-cart"));
+    if (!Array.isArray(saved)) return;
 
-  if (savedCart) {
-    CART = JSON.parse(savedCart);
+    CART = saved
+      .map(item => ({ id: Number(item.id), quantity: Number(item.quantity) }))
+      .filter(item =>
+        Number.isInteger(item.quantity) &&
+        item.quantity > 0 &&
+        PRODUCTS.some(p => p.id === item.id)   // drops ids that no longer exist
+      );
+  } catch (error) {
+    console.warn("Saved cart was corrupted, starting fresh.", error);
+    CART = [];
+    localStorage.removeItem("shoplite-cart");
   }
 }
 

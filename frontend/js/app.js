@@ -1,20 +1,13 @@
 const productGrid = document.getElementById("product-grid");
-productGrid.addEventListener("click", function(event){
-   const button = event.target.closest(".add-to-cart-btn");
+productGrid.addEventListener("click", function (event) {
+  const button = event.target.closest(".add-to-cart-btn");
+  if (!button) return;
 
-   if(!button){
-    return;
-   }
-   const card = button.closest(".product-card");
+  const card = button.closest(".product-card");
+  const productId = Number(card.dataset.id);  
 
-   const productId = card.dataset.id;
-
-
-   const product = PRODUCTS.find(
-    product => product.id == productId
-   );
-   addToCart(productId);
-   renderCart();
+  addToCart(productId);
+  renderCart();
 });
 
 function createProductCard(product) {
@@ -64,9 +57,9 @@ function renderProducts(products) {
 renderProducts(PRODUCTS);
 
 function populateCategoryDropdown(products) {
-  const categories = [...new Set(products.map(product => product.category))];
-
-  const select = document.getElementById('category-select');
+  const select = document.getElementById("category-select"); 
+  const productCat = products.map(product => product.category);
+  const categories = [...new Set(productCat)];
 
   categories.forEach(category => {
     const option = document.createElement('option');
@@ -114,3 +107,19 @@ function getFilteredAndSortedProducts() {
   }
   return sorted;
 }
+
+const menuToggle = document.getElementById("menu-toggle");
+const mainNav = document.getElementById("main-nav");
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = mainNav.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", isOpen);
+});
+
+// close the menu after tapping a link
+mainNav.addEventListener("click", (e) => {
+  if (e.target.classList.contains("navigation")) {
+    mainNav.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", false);
+  }
+});
