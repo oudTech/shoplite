@@ -52,7 +52,7 @@ function renderCart() {
     });
   }
 
-  cartSubtotal.textContent = "₦" + getCartSubtotal().toFixed(2);
+  cartSubtotal.textContent = formatPrice(getCartSubtotal());
   cartBadge.textContent = getCartCount();
 }
 
