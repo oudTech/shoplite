@@ -1,3 +1,4 @@
+const API_BASE_URL = "http://localhost:3000";
 const productGrid = document.getElementById("product-grid");
 productGrid.addEventListener("click", function (event) {
   const button = event.target.closest(".add-to-cart-btn");
@@ -54,7 +55,6 @@ function renderProducts(products) {
   });
 }
 
-renderProducts(PRODUCTS);
 
 function populateCategoryDropdown(products) {
   const select = document.getElementById("category-select"); 
@@ -88,8 +88,6 @@ function updateDisplay() {
 document.getElementById('search-input').addEventListener('input', updateDisplay);
 document.getElementById('category-select').addEventListener('change', updateDisplay);
 
-populateCategoryDropdown(PRODUCTS);
-renderProducts(PRODUCTS);
 
 function getSortSelection() {
   return document.getElementById('sort-select').value; // 'low-high' or 'high-low'
@@ -123,3 +121,26 @@ mainNav.addEventListener("click", (e) => {
     menuToggle.setAttribute("aria-expanded", false);
   }
 });
+
+async function loadProducts() {
+  const response = await fetch(`${API_BASE_URL}/products`);
+  if (!response.ok) {
+    throw new Error(`Server responded with ${response.status}`);
+  }
+  return response.json();
+}
+
+async function init() {
+  productGrid.innerHTML = `<p class="loading-state">Loading products...</p>`;
+  try {
+    PRODUCTS = await loadProducts();
+    populateCategoryDropdown(PRODUCTS);
+    renderProducts(PRODUCTS);
+    renderCart();
+  } catch (error) {
+    console.error("Failed to load products:", error);
+    productGrid.innerHTML = `<p class="error-state">Couldn't load products. Check that the server is running, then reload.</p>`;
+  }
+}
+
+init();
