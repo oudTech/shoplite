@@ -1,9 +1,11 @@
 const express = require('express');
 const PRODUCTS = require('./data/products');
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('Server is alive and well');

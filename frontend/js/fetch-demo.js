@@ -13,9 +13,9 @@ async function fetchData(endpoint) {
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
-
+            console.log(response);
         const data = await response.json();
-
+            console.log(data);
         resultsContainer.innerHTML = "";
         data.forEach(item => {
             const element = document.createElement("p");
