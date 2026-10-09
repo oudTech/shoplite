@@ -23,15 +23,17 @@ app.get('/products/:id', (req, res) => {
   const product = PRODUCTS.find(product => product.id === id);
 
   if (!product) {
-   return res.status(404).json({ error: "Product not found"});
+   return res.status(404).json({ error: `Product with id ${req.params.id} not found` });
   }else{
     res.status(200).json(product);
   }
  
 });
+
+
 app.post('/products', (req, res) => {
   const { name, price, category, stock } = req.body;
-  if (!name || !price  === undefined) {
+  if (!name || price  === undefined) {
   return res.status(400).json({error: "name and price are required"});
   }
   if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
@@ -50,6 +52,16 @@ PRODUCTS.push(newProduct);
 return res.status(201).json(newProduct);
 });
 
+app.use((req, res) => {
+  res.status(404).json({ error: `Route not found: ${req.method} ${req.originalUrl}` });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    error: err.status && err.status < 500 ? err.message : 'Internal server error'
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
