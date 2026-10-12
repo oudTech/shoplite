@@ -14,8 +14,10 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
     "experss": "^0.0.1-security",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.11.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

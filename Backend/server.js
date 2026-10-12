@@ -1,4 +1,7 @@
+require('dotenv').config();
+
 const express = require('express');
+const mongoose = require('mongoose');
 const PRODUCTS = require('./data/products');
 const cors = require("cors");
 
@@ -65,6 +68,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI is missing from the .env file');
+    }
+
+    await mongoose.connect(process.env.MONGODB_URI);
+
+    console.log('MongoDB connected successfully');
+
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+}
+
+startServer();
