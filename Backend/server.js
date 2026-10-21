@@ -11,14 +11,20 @@ app.use(express.json());
 app.use(cors());
 
 
-app.use((req, res, next) => {
-  const startTime = Date.now();
 
-  res.on('finish', () => {
-    const duration = Date.now() - startTime;
+app.use((req, res, next) => {
+
+  if (req.path === "/health") {
+    return next();
+  }
+
+  const start = Date.now();
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
 
     console.log(
-      `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration} ms`
+      `${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`
     );
   });
 
@@ -26,16 +32,38 @@ app.use((req, res, next) => {
 });
 
 
+
+
 function validateProduct(body) {
+  if (
+    !body ||
+    typeof body !== 'object' ||
+    Array.isArray(body)
+  ) {
+    return 'request body must be a JSON object';
+  }
+
   const { name, price } = body;
-  if (!name || price === undefined) {
+
+  if (
+    typeof name !== 'string' ||
+    !name.trim() ||
+    price === undefined
+  ) {
     return 'name and price are required';
   }
-  if (typeof price !== 'number' || !Number.isFinite(price) || price <= 0) {
+
+  if (
+    typeof price !== 'number' ||
+    !Number.isFinite(price) ||
+    price <= 0
+  ) {
     return 'price must be a positive number';
   }
+
   return null;
 }
+
 
 
 function checkId(req, res, next) {
@@ -50,7 +78,19 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+  const databaseConnected = mongoose.connection.readyState === 1;
+
+  if (!databaseConnected) {
+    return res.status(503).json({
+      status: 'error',
+      database: 'disconnected'
+    });
+  }
+
+  res.status(200).json({
+    status: 'ok',
+    database: 'connected'
+  });
 });
 app.get('/products', async (req, res) => {
   try {
@@ -196,10 +236,13 @@ async function startServer() {
       throw new Error('MONGODB_URI is missing from the .env file');
     }
 
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI, {
+  dbName: 'shoplite_day20'
+});
 
+    
     console.log('MongoDB connected successfully');
-
+    console.log('Connected database:', mongoose.connection.name);
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });

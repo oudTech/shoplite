@@ -1,34 +1,37 @@
+
 let CART = [];
-let cartNumber = document.getElementById('cart-badge');
+
 function addToCart(productId) {
-  const existingItem = CART.find(item => item.id === productId);
+  const id = String(productId);
+  const existingItem = CART.find(item => item.id === id);
+
   if (existingItem) {
     existingItem.quantity += 1;
-    
   } else {
     CART.push({
-      id: productId,
+      id,
       quantity: 1
     });
   }
-  cartNumber.textContent = getCartCount();
-  saveCart();
 
+  saveCart();
 }
 
 function removeFromCart(productId) {
-  CART = CART.filter(item => item.id !== productId);
-
+  const id = String(productId);
+  CART = CART.filter(item => item.id !== id);
   saveCart();
 }
 
 function updateQuantity(productId, newQuantity) {
+  const id = String(productId);
+
   if (newQuantity <= 0) {
-    removeFromCart(productId);
+    removeFromCart(id);
     return;
   }
 
-  const item = CART.find(item => item.id === productId);
+  const item = CART.find(item => item.id === id);
 
   if (item) {
     item.quantity = newQuantity;
@@ -38,14 +41,12 @@ function updateQuantity(productId, newQuantity) {
 }
 
 function getCartCount() {
-  return CART.reduce((total, item) => {
-    return total + item.quantity;
-  }, 0);
+  return CART.reduce((total, item) => total + item.quantity, 0);
 }
 
 function getCartSubtotal() {
   return CART.reduce((total, item) => {
-    const product = PRODUCTS.find(product => product.id === item.id);
+    const product = PRODUCTS.find(product => String(product.id) === item.id);
 
     if (!product) {
       return total;
@@ -62,14 +63,19 @@ function saveCart() {
 function loadCart() {
   try {
     const saved = JSON.parse(localStorage.getItem("shoplite-cart"));
+
     if (!Array.isArray(saved)) return;
 
     CART = saved
-      .map(item => ({ id: Number(item.id), quantity: Number(item.quantity) }))
+      .map(item => ({
+        id: String(item.id),
+        quantity: Number(item.quantity)
+      }))
       .filter(item =>
+        item.id &&
         Number.isInteger(item.quantity) &&
         item.quantity > 0 &&
-        PRODUCTS.some(p => p.id === item.id)   // drops ids that no longer exist
+        PRODUCTS.some(product => String(product.id) === item.id)
       );
   } catch (error) {
     console.warn("Saved cart was corrupted, starting fresh.", error);
@@ -77,10 +83,3 @@ function loadCart() {
     localStorage.removeItem("shoplite-cart");
   }
 }
-
-function clearCart() {
-  CART = [];
-  saveCart();
-}
-
-loadCart();

@@ -5,7 +5,7 @@ productGrid.addEventListener("click", function (event) {
   if (!button) return;
 
   const card = button.closest(".product-card");
-  const productId = Number(card.dataset.id);  
+  const productId = String(card.dataset.id);
 
   addToCart(productId);
   renderCart();
@@ -134,6 +134,7 @@ async function init() {
   productGrid.innerHTML = `<p class="loading-state">Loading products...</p>`;
   try {
     PRODUCTS = await loadProducts();
+    loadCart();
     populateCategoryDropdown(PRODUCTS);
     renderProducts(PRODUCTS);
     renderCart();
