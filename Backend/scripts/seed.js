@@ -1,8 +1,11 @@
-require('dotenv').config();
+require('dotenv').config({
+  path: require('path').resolve(__dirname, '../.env')
+});
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
 
 const MONGO_URI = process.env.MONGODB_URI;
+const TEST_DB_NAME = 'shoplite_day20';
 
 const products = [
 {
@@ -73,9 +76,13 @@ const products = [
 
 async function seed() {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI, {
+      dbName: TEST_DB_NAME
+    });
+
     await Product.deleteMany({});
     await Product.insertMany(products);
+
     console.log(`Seeded ${products.length} products`);
   } catch (err) {
     console.error('Seed failed:', err.message);
@@ -83,5 +90,4 @@ async function seed() {
     await mongoose.disconnect();
   }
 }
-
 seed();

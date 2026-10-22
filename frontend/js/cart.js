@@ -16,7 +16,7 @@ document.getElementById("cart-close").addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
 function createCartLine(line) {
-  const product = PRODUCTS.find(p => p.id === line.id);
+  const product = PRODUCTS.find(p => String(p.id) === line.id);
 
   const el = document.createElement("div");
   el.className = "cart-line";
@@ -41,13 +41,18 @@ const cartItems = document.getElementById("cart-items");
 const cartSubtotal = document.getElementById("cart-subtotal");
 const cartBadge = document.getElementById("cart-badge");
 
+
 function renderCart() {
   cartItems.innerHTML = "";
 
-  if (CART.length === 0) {
+  const validItems = CART.filter(line =>
+    PRODUCTS.some(product => String(product.id) === String(line.id))
+  );
+
+  if (validItems.length === 0) {
     cartItems.innerHTML = "<p>Your cart is empty.</p>";
   } else {
-    CART.forEach(line => {
+    validItems.forEach(line => {
       cartItems.appendChild(createCartLine(line));
     });
   }
@@ -56,11 +61,13 @@ function renderCart() {
   cartBadge.textContent = getCartCount();
 }
 
+
 cartItems.addEventListener("click", (event) => {
   const button = event.target.closest("button");
+  
   if (!button) return;
 
-  const id = Number(button.dataset.id);
+  const id = String(button.dataset.id);
   const action = button.dataset.action;
   const line = CART.find(item => item.id === id);
   if (!line) return;
