@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopLite | Account</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <a href="index.html">ShopLite</a>
+
+    <nav id="main-nav">
+      <a href="index.html">Home</a>
+      <a href="auth.html" id="auth-link">Login / Signup</a>
+      <span id="user-status"></span>
+      <button id="logout-button" type="button" hidden>
+        Logout
+      </button>
+    </nav>
+  </header>
+
+  <main class="content">
+    <section id="auth-section">
+      <h1 id="form-title">Login to ShopLite</h1>
+
+     <form id="login-form" novalidate>
+        <label for="login-email">Email</label>
+        <input
+          type="email"
+          id="login-email"
+          required
+          autocomplete="email"
+        >
+
+        <label for="login-password">Password</label>
+        <input
+          type="password"
+          id="login-password"
+          required
+          autocomplete="current-password"
+        >
+
+        <button id="login-submit" type="submit">Login</button>
+        <p id="login-error" role="alert"></p>
+      </form>
+
+      <form id="signup-form" hidden novalidate>
+        <label for="signup-email">Email</label>
+        <input
+          type="email"
+          id="signup-email"
+          required
+          autocomplete="email"
+        >
+
+        <label for="signup-password">Password</label>
+        <input
+          type="password"
+          id="signup-password"
+          required
+          minlength="8"
+          autocomplete="new-password"
+        >
+
+        <button id="signup-submit" type="submit">Create account</button>
+        <p id="signup-error" role="alert"></p>
+      </form>
+
+      <p>
+        <span id="toggle-message">Don't have an account?</span>
+        <button id="toggle-auth" type="button">Sign up</button>
+      </p>
+    </section>
+
+    <section id="profile-section" hidden>
+      <h1>Your account</h1>
+      <p id="profile-message"></p>
+    </section>
+  </main>
+
+  <script src="js/auth-state.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
