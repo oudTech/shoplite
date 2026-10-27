@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Product = require('./models/Product');
 const User = require('./models/User');
+const Order = require('./models/Order');
 const bcrypt = require('bcryptjs');
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
@@ -379,6 +380,151 @@ app.get('/me', requireAuth, async (req, res) => {
     });
   }
 });
+
+
+app.post('/orders', requireAuth, async (req, res) => {
+  const { items } = req.body || {};
+
+  // 1. Validate the cart before accessing the database.
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({
+      error: 'Order must contain at least one item'
+    });
+  }
+
+  // Validate every item before looking up any products.
+  for (const item of items) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      return res.status(400).json({
+        error: 'Each order item must be an object'
+      });
+    }
+
+    if (
+      typeof item.productId !== 'string' ||
+      !mongoose.isValidObjectId(item.productId)
+    ) {
+      return res.status(400).json({
+        error: `Invalid product id: ${item.productId}`
+      });
+    }
+
+    if (
+      typeof item.quantity !== 'number' ||
+      !Number.isInteger(item.quantity)
+    ) {
+      return res.status(400).json({
+        error: 'Quantity must be a whole number'
+      });
+    }
+
+    if (item.quantity <= 0) {
+      return res.status(400).json({
+        error: 'Quantity must be greater than zero'
+      });
+    }
+  }
+
+  try {
+    // 2. Combine repeated product IDs so their quantities
+    // are checked against stock as one total.
+    const quantities = new Map();
+
+    for (const item of items) {
+      const id = item.productId.toLowerCase();
+
+      quantities.set(
+        id,
+        (quantities.get(id) || 0) + item.quantity
+      );
+    }
+
+    const orderItems = [];
+    const productsToUpdate = [];
+    let total = 0;
+
+    // 3. Fetch real product details and validate all stock.
+    for (const [productId, quantity] of quantities) {
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return res.status(400).json({
+          error: `Product with id ${productId} does not exist`
+        });
+      }
+
+      if (product.stock < quantity) {
+        return res.status(400).json({
+          error: `Not enough stock for ${product.name}. Available: ${product.stock}, requested: ${quantity}`
+        });
+      }
+
+      // Use database values, never client-supplied prices or names.
+      orderItems.push({
+        productId: product._id,
+        name: product.name,
+        price: product.price,
+        quantity
+      });
+
+      total += product.price * quantity;
+
+      productsToUpdate.push({
+        product,
+        quantity
+      });
+    }
+
+    // Avoid floating-point currency rounding errors.
+    total = Math.round((total + Number.EPSILON) * 100) / 100;
+
+    // 4. Save the order with server-verified values.
+    const order = await Order.create({
+      userId: req.userId,
+      items: orderItems,
+      total
+    });
+
+    // 5. Decrement stock only after the order has been saved.
+    // A failure here can leave a saved order with partially updated
+    // stock. Database transactions are the proper long-term fix.
+    for (const { product, quantity } of productsToUpdate) {
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: product._id,
+          stock: { $gte: quantity }
+        },
+        {
+          $inc: { stock: -quantity }
+        },
+        { new: true }
+      );
+
+      if (!updatedProduct) {
+        console.error(
+          `Stock update failed after order ${order._id} was saved. Product: ${product._id}`
+        );
+
+        return res.status(409).json({
+          error: 'Stock changed during checkout. Please contact support about the order.'
+        });
+      }
+    }
+
+    // 6. Return the created order.
+    return res.status(201).json({
+      message: 'Order created successfully',
+      order
+    });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      error: 'Failed to create order'
+    });
+  }
+});
+
 
 
 app.use((req, res) => {
