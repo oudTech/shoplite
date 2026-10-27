@@ -15,7 +15,7 @@ function createProductCard(product) {
   const card = document.createElement("article");
 
   card.className = "product-card";
-  card.dataset.id = product.id;
+  card.dataset.id = product._id;
 
   card.innerHTML = `
     <img

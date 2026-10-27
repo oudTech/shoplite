@@ -195,10 +195,12 @@ if (isAuthPage) {
         throw new Error(data.error || data.message || 'Login failed.');
       }
 
-      setToken(data.token);
-      loginError.textContent = '';
+     setToken(data.token);
+loginError.textContent = '';
 
-      await updateAuthUI();
+await updateAuthUI();
+
+window.location.href = 'index.html';
     } catch (error) {
       loginError.textContent =
         error.message === 'Failed to fetch'

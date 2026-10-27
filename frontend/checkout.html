@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171717">
+  <title>ShopLite | Checkout</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="checkout-page">
+  <header class="site-header">
+    <a href="index.html" class="brand">ShopLite<span>.</span></a>
+
+    <nav id="main-nav" class="checkout-nav">
+      <a href="index.html">Home</a>
+      <a href="index.html" class="back-to-shop">Continue shopping</a>
+      <a href="auth.html" id="auth-link">Login / Signup</a>
+      <span id="user-status"></span>
+      <button id="logout-button" type="button" hidden>
+        Logout
+      </button>
+    </nav>
+  </header>
+
+  <main class="checkout-main">
+    <div class="checkout-heading">
+      <p class="checkout-eyebrow">ALMOST THERE</p>
+      <h1>Checkout</h1>
+      <p>Review your items before placing your order.</p>
+    </div>
+
+    <section id="checkout-message" class="checkout-message"
+      aria-live="polite"></section>
+
+    <section id="checkout-content" class="checkout-card" hidden>
+      <div class="checkout-card-heading">
+        <div>
+          <p class="checkout-eyebrow">YOUR PURCHASE</p>
+          <h2>Order summary</h2>
+        </div>
+        <span class="secure-label">Order review</span>
+      </div>
+
+      <div id="checkout-items" class="checkout-items"></div>
+
+      <div class="checkout-total-row">
+        <span>Total</span>
+        <strong id="checkout-total">₦0</strong>
+      </div>
+
+      <button id="place-order" class="place-order-button" type="button">
+        Place Order <span aria-hidden="true">→</span>
+      </button>
+
+      <p class="checkout-note">
+        Your order total is calculated using current product prices.
+      </p>
+    </section>
+
+    <p class="checkout-footer">
+      <a href="index.html">← Back to ShopLite</a>
+    </p>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart-data.js"></script>
+  <script src="js/auth-state.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
