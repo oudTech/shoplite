@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
 const requireAuth = require('./middleware/requireAuth');
+const requireAdmin = require('./middleware/requireAdmin');
 
 const app = express();
 const PORT = 3000;
@@ -381,6 +382,11 @@ app.get('/me', requireAuth, async (req, res) => {
   }
 });
 
+app.get('/admin/ping', requireAuth, requireAdmin, (req, res) => {
+  return res.status(200).json({
+    message: 'Admin access confirmed'
+  });
+});
 
 app.post('/orders', requireAuth, async (req, res) => {
   const { items } = req.body || {};
