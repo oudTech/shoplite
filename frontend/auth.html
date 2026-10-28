@@ -1,17 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShopLite | Account</title>
+  <meta
+    name="description"
+    content="Sign in to your ShopLite account or create an account to get started."
+  >
+  <title>ShopLite | Your Account</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-  <header>
-    <a href="index.html">ShopLite</a>
 
-    <nav id="main-nav">
+<body class="auth-page">
+  <header class="auth-header">
+    <a href="index.html" class="auth-brand">
+      ShopLite<span>.</span>
+    </a>
+
+    <nav id="main-nav" class="auth-nav">
       <a href="index.html">Home</a>
       <a href="auth.html" id="auth-link">Login / Signup</a>
       <span id="user-status"></span>
@@ -21,64 +27,144 @@
     </nav>
   </header>
 
-  <main class="content">
-    <section id="auth-section">
-      <h1 id="form-title">Login to ShopLite</h1>
+  <main class="auth-main">
+    <section class="auth-layout" id="auth-section">
 
-     <form id="login-form" novalidate>
-        <label for="login-email">Email</label>
-        <input
-          type="email"
-          id="login-email"
-          required
-          autocomplete="email"
-        >
+      <div class="auth-welcome">
+        <a href="index.html" class="auth-brand auth-brand-light">
+          ShopLite<span>.</span>
+        </a>
 
-        <label for="login-password">Password</label>
-        <input
-          type="password"
-          id="login-password"
-          required
-          autocomplete="current-password"
-        >
+        <div class="auth-welcome-content">
+          <p class="auth-eyebrow">YOUR EVERYDAY SHOPPING, SIMPLIFIED</p>
 
-        <button id="login-submit" type="submit">Login</button>
-        <p id="login-error" role="alert"></p>
-      </form>
+          <h1>Good things are just a few clicks away.</h1>
 
-      <form id="signup-form" hidden novalidate>
-        <label for="signup-email">Email</label>
-        <input
-          type="email"
-          id="signup-email"
-          required
-          autocomplete="email"
-        >
+          <p class="auth-welcome-description">
+            Discover your favourites, manage your shopping, and enjoy
+            a simpler way to shop with ShopLite.
+          </p>
 
-        <label for="signup-password">Password</label>
-        <input
-          type="password"
-          id="signup-password"
-          required
-          minlength="8"
-          autocomplete="new-password"
-        >
+          <div class="auth-benefits">
+            <div class="auth-benefit">
+              <span class="auth-benefit-icon" aria-hidden="true">✓</span>
+              <span>A simple, convenient shopping experience</span>
+            </div>
 
-        <button id="signup-submit" type="submit">Create account</button>
-        <p id="signup-error" role="alert"></p>
-      </form>
+            <div class="auth-benefit">
+              <span class="auth-benefit-icon" aria-hidden="true">✓</span>
+              <span>Your account, all in one place</span>
+            </div>
 
-      <p>
-        <span id="toggle-message">Don't have an account?</span>
-        <button id="toggle-auth" type="button">Sign up</button>
-      </p>
+            <div class="auth-benefit">
+              <span class="auth-benefit-icon" aria-hidden="true">✓</span>
+              <span>Easy access to your orders</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="auth-welcome-footer">
+          A little shopping. A lot more convenience.
+        </p>
+      </div>
+
+      <div class="auth-form-panel">
+        <div class="auth-form-inner">
+          <p class="auth-eyebrow auth-form-eyebrow">
+            WELCOME TO SHOPLITE
+          </p>
+
+          <h2 id="form-title">Login to ShopLite</h2>
+
+          <p class="auth-form-description">
+            Sign in to continue where you left off.
+          </p>
+
+          <form id="login-form" novalidate>
+            <label for="login-email">Email address</label>
+            <input
+              type="email"
+              id="login-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            >
+
+            <label for="login-password">Password</label>
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            >
+
+            <button id="login-submit" class="auth-submit" type="submit">
+              Login to your account
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <p id="login-error" class="auth-error" role="alert"></p>
+          </form>
+
+          <form id="signup-form" hidden novalidate>
+            <label for="signup-email">Email address</label>
+            <input
+              type="email"
+              id="signup-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            >
+
+            <label for="signup-password">Create a password</label>
+            <input
+              type="password"
+              id="signup-password"
+              placeholder="At least 8 characters"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            >
+
+            <p class="auth-field-hint">
+              Use at least 8 characters for your password.
+            </p>
+
+            <button id="signup-submit" class="auth-submit" type="submit">
+              Create your account
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <p id="signup-error" class="auth-error" role="alert"></p>
+          </form>
+
+          <div class="auth-switch">
+            <span id="toggle-message">Don't have an account?</span>
+            <button id="toggle-auth" type="button">Sign up</button>
+          </div>
+
+          <p class="auth-terms">
+            By using ShopLite, you agree to use your account responsibly.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <section id="profile-section" hidden>
+    <section id="profile-section" class="auth-profile" hidden>
+      <p class="auth-eyebrow">YOUR SHOPLITE ACCOUNT</p>
       <h1>Your account</h1>
       <p id="profile-message"></p>
+      <a href="index.html" class="auth-submit auth-profile-link">
+        Continue shopping →
+      </a>
     </section>
   </main>
+
+  <footer class="auth-page-footer">
+    <a href="index.html">← Back to ShopLite</a>
+    <span>© ShopLite</span>
+  </footer>
 
   <script src="js/auth-state.js"></script>
   <script src="js/auth.js"></script>

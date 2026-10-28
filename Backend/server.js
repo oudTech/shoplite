@@ -385,14 +385,13 @@ app.get('/me', requireAuth, async (req, res) => {
 app.post('/orders', requireAuth, async (req, res) => {
   const { items } = req.body || {};
 
-  // 1. Validate the cart before accessing the database.
   if (!Array.isArray(items) || items.length === 0) {
     return res.status(400).json({
       error: 'Order must contain at least one item'
     });
   }
 
-  // Validate every item before looking up any products.
+
   for (const item of items) {
     if (!item || typeof item !== 'object' || Array.isArray(item)) {
       return res.status(400).json({
@@ -426,8 +425,7 @@ app.post('/orders', requireAuth, async (req, res) => {
   }
 
   try {
-    // 2. Combine repeated product IDs so their quantities
-    // are checked against stock as one total.
+
     const quantities = new Map();
 
     for (const item of items) {
@@ -443,7 +441,7 @@ app.post('/orders', requireAuth, async (req, res) => {
     const productsToUpdate = [];
     let total = 0;
 
-    // 3. Fetch real product details and validate all stock.
+
     for (const [productId, quantity] of quantities) {
       const product = await Product.findById(productId);
 
@@ -459,7 +457,7 @@ app.post('/orders', requireAuth, async (req, res) => {
         });
       }
 
-      // Use database values, never client-supplied prices or names.
+
       orderItems.push({
         productId: product._id,
         name: product.name,
@@ -475,19 +473,17 @@ app.post('/orders', requireAuth, async (req, res) => {
       });
     }
 
-    // Avoid floating-point currency rounding errors.
+
     total = Math.round((total + Number.EPSILON) * 100) / 100;
 
-    // 4. Save the order with server-verified values.
+
     const order = await Order.create({
       userId: req.userId,
       items: orderItems,
       total
     });
 
-    // 5. Decrement stock only after the order has been saved.
-    // A failure here can leave a saved order with partially updated
-    // stock. Database transactions are the proper long-term fix.
+
     for (const { product, quantity } of productsToUpdate) {
       const updatedProduct = await Product.findOneAndUpdate(
         {
@@ -511,7 +507,7 @@ app.post('/orders', requireAuth, async (req, res) => {
       }
     }
 
-    // 6. Return the created order.
+
     return res.status(201).json({
       message: 'Order created successfully',
       order
@@ -521,6 +517,63 @@ app.post('/orders', requireAuth, async (req, res) => {
 
     return res.status(500).json({
       error: 'Failed to create order'
+    });
+  }
+});
+
+
+app.get('/orders', requireAuth, async (req, res) => {
+  try {
+
+    const orders = await Order.find({
+      userId: req.userId
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      count: orders.length,
+      orders
+    });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      error: 'Failed to retrieve orders'
+    });
+  }
+});
+
+
+app.get('/orders/:id', requireAuth, async (req, res) => {
+  try {
+// Reject malformed order IDs.
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        error: 'Invalid order id'
+      });
+    }
+
+// Find the requested order.
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        error: 'Order not found'
+      });
+    }
+
+// Only the owner may view this order.
+    if (order.userId.toString() !== req.userId) {
+      return res.status(404).json({
+        error: 'Order not found'
+      });
+    }
+
+    return res.status(200).json({ order });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      error: 'Failed to retrieve order'
     });
   }
 });

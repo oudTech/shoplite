@@ -24,8 +24,8 @@
 
     <nav id="main-nav">
       <a href="index.html" class="navigation">Home</a>
-      <a href="#" class="navigation">Cart</a>
-      <a href="#" class="navigation">Checkout</a>
+
+      <a href="checkout.html" class="navigation">Checkout</a>
       <a href="auth.html" id="auth-link" class="navigation">
         Login / Signup
       </a>
@@ -57,9 +57,16 @@
       <button id="cart-close">X close</button>
       <h2>your cart</h2>
         <div id="cart-items"></div>
-        <p>subtotal <span id="cart-subtotal">0</span></p>
+
+        <p>Subtotal <span id="cart-subtotal">0</span></p>
+
+        <div id="cart-checkout" hidden>
+          <a href="checkout.html" class="checkout-link">
+            Proceed to Checkout
+          </a>
+        </div>
     </aside>
- 
+
 
   <script src="js/data.js"></script>
   <script src="js/cart-data.js"></script>
@@ -67,6 +74,6 @@
   <script src="js/auth-state.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
- 
+
 </body>
 </html>

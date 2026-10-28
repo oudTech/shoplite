@@ -16,7 +16,7 @@ document.getElementById("cart-close").addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
 function createCartLine(line) {
-  const product = PRODUCTS.find(p => String(p.id) === line.id);
+  const product = PRODUCTS.find(p => String(p._id) === line.id);
 
   const el = document.createElement("div");
   el.className = "cart-line";
@@ -26,12 +26,12 @@ function createCartLine(line) {
       <strong>${product.name}</strong>
       <div>$${product.price.toFixed(2)} each</div>
       <div>
-        <button data-action="decrease" data-id="${product.id}">-</button>
+        <button data-action="decrease" data-id="${product._id}">-</button>
         <span>${line.quantity}</span>
-        <button data-action="increase" data-id="${product.id}">+</button>
+        <button data-action="increase" data-id="${product._id}">+</button>
       </div>
       <div>Line total: $${(product.price * line.quantity).toFixed(2)}</div>
-      <button data-action="remove" data-id="${product.id}">Remove</button>
+      <button data-action="remove" data-id="${product._id}">Remove</button>
     </div>
   `;
   return el;
@@ -40,13 +40,14 @@ function createCartLine(line) {
 const cartItems = document.getElementById("cart-items");
 const cartSubtotal = document.getElementById("cart-subtotal");
 const cartBadge = document.getElementById("cart-badge");
+const cartCheckout = document.getElementById("cart-checkout");
 
 
 function renderCart() {
   cartItems.innerHTML = "";
 
   const validItems = CART.filter(line =>
-    PRODUCTS.some(product => String(product.id) === String(line.id))
+    PRODUCTS.some(product => String(product._id) === String(line.id))
   );
 
   if (validItems.length === 0) {
@@ -59,6 +60,7 @@ function renderCart() {
 
   cartSubtotal.textContent = formatPrice(getCartSubtotal());
   cartBadge.textContent = getCartCount();
+  cartCheckout.hidden = validItems.length === 0;
 }
 
 

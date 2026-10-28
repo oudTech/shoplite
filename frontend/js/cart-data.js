@@ -46,7 +46,7 @@ function getCartCount() {
 
 function getCartSubtotal() {
   return CART.reduce((total, item) => {
-    const product = PRODUCTS.find(product => String(product.id) === item.id);
+    const product = PRODUCTS.find(product => String(product._id) === item.id);
 
     if (!product) {
       return total;
@@ -59,7 +59,6 @@ function getCartSubtotal() {
 function saveCart() {
   localStorage.setItem("shoplite-cart", JSON.stringify(CART));
 }
-
 function loadCart() {
   try {
     const saved = JSON.parse(localStorage.getItem("shoplite-cart"));
@@ -75,11 +74,15 @@ function loadCart() {
         item.id &&
         Number.isInteger(item.quantity) &&
         item.quantity > 0 &&
-        PRODUCTS.some(product => String(product.id) === item.id)
+        PRODUCTS.some(product => String(product._id) === item.id)
       );
   } catch (error) {
     console.warn("Saved cart was corrupted, starting fresh.", error);
     CART = [];
     localStorage.removeItem("shoplite-cart");
   }
+}
+function clearCart() {
+  CART = [];
+  saveCart();
 }
