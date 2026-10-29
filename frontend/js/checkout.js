@@ -124,7 +124,11 @@ async function handlePlaceOrder() {
 
   } catch (error) {
     console.error("Order submission failed:", error);
-    showCheckoutMessage(error.message);
+    showCheckoutMessage(
+  error instanceof TypeError
+    ? "Unable to connect to the server. Please check your connection and try again. Your cart has been preserved."
+    : error.message
+);
   } finally {
     placeOrderButton.disabled = false;
     placeOrderButton.textContent = "Place Order";
