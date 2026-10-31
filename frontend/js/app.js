@@ -90,14 +90,14 @@ document.getElementById('category-select').addEventListener('change', updateDisp
 
 
 function getSortSelection() {
-  return document.getElementById('sort-select').value; // 'low-high' or 'high-low'
+  return document.getElementById('sort-select').value;
 }
 
 function getFilteredAndSortedProducts() {
   const filtered = getFilteredProducts();
   const sortOrder = getSortSelection();
 
-  const sorted = [...filtered]; // copy, so we don't mutate the filtered array
+  const sorted = [...filtered];
   if (sortOrder === 'low-high') {
     sorted.sort((a, b) => a.price - b.price);
   } else if (sortOrder === 'high-low') {
@@ -114,7 +114,7 @@ menuToggle.addEventListener("click", () => {
   menuToggle.setAttribute("aria-expanded", isOpen);
 });
 
-// close the menu after tapping a link
+
 mainNav.addEventListener("click", (e) => {
   if (e.target.classList.contains("navigation")) {
     mainNav.classList.remove("open");
