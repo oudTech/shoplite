@@ -1,17 +1,6 @@
 
 const mongoose = require('mongoose');
 
-/*
-  Order snapshot design:
-  An order must preserve the product name and price at purchase time.
-  Tomorrow, POST /orders must fetch each product from the database and
-  copy its real name and price into the order. Never trust prices sent
-  by the client. Store the total so historical orders remain accurate
-  even if product prices or total-calculation logic change later.
-*/
-
-// Each item is embedded inside its order because it does not need
-// to exist as an independent document.
 const orderItemSchema = new mongoose.Schema(
   {
     productId: {

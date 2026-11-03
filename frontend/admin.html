@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopLite Admin Dashboard</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <header>
+    <a href="index.html">ShopLite</a>
+    <h1>Admin Dashboard</h1>
+    <button id="logout-button" type="button">Logout</button>
+  </header>
+
+  <main class="content">
+
+    <section id="access-message">
+      <h2>Checking admin access...</h2>
+    </section>
+
+    <section id="admin-content" hidden>
+
+      <h2>Product Management</h2>
+
+      <section id="product-form-section">
+        <h3 id="form-title">Create a Product</h3>
+
+        <form id="product-form">
+          <input type="hidden" id="product-id">
+
+          <label for="product-name">Product Name</label>
+          <input type="text" id="product-name" required>
+
+          <label for="product-price">Price</label>
+          <input type="number" id="product-price" min="0" step="0.01" required>
+
+          <label for="product-category">Category</label>
+          <input type="text" id="product-category" required>
+
+          <label for="product-image">Image URL</label>
+          <input type="text" id="product-image" required>
+
+          <label for="product-stock">Stock</label>
+          <input type="number" id="product-stock" min="0" step="1" required>
+
+          <p id="form-message" role="alert"></p>
+
+          <button type="submit" id="save-product-button">
+            Create Product
+          </button>
+
+          <button type="button" id="cancel-edit-button" hidden>
+            Cancel Edit
+          </button>
+        </form>
+      </section>
+
+      <section id="products-section">
+        <h3>All Products</h3>
+
+        <div id="products-list">
+          Loading products...
+        </div>
+      </section>
+            <section id="orders-section">
+        <h2>Customer Orders</h2>
+
+        <div id="orders-list">
+          Loading orders...
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <script src="js/auth-state.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

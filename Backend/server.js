@@ -267,7 +267,7 @@ app.get('/products/:id', checkId, async (req, res) => {
 
 
 
-app.post('/products', async (req, res) => {
+app.post('/products', requireAuth, requireAdmin, async (req, res) => {
   const problem = validateProduct(req.body);
 
   if (problem) {
@@ -295,7 +295,7 @@ app.post('/products', async (req, res) => {
 });
 
 
-app.put('/products/:id', checkId, async (req, res) => {
+app.put('/products/:id', requireAuth, requireAdmin, checkId, async (req, res) => {
 
   const problem = validateProduct(req.body);
 
@@ -333,7 +333,7 @@ app.put('/products/:id', checkId, async (req, res) => {
 });
 
 
-app.delete('/products/:id', checkId, async (req, res) => {
+app.delete('/products/:id', requireAuth, requireAdmin, checkId, async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(
       req.params.id
@@ -370,6 +370,7 @@ app.get('/me', requireAuth, async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        isAdmin: user.isAdmin,
         createdAt: user.createdAt
       }
     });
@@ -386,6 +387,26 @@ app.get('/admin/ping', requireAuth, requireAdmin, (req, res) => {
   return res.status(200).json({
     message: 'Admin access confirmed'
   });
+});
+
+
+app.get('/admin/orders', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('userId', 'email')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      count: orders.length,
+      orders
+    });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      error: 'Failed to fetch admin orders'
+    });
+  }
 });
 
 app.post('/orders', requireAuth, async (req, res) => {
@@ -551,14 +572,13 @@ app.get('/orders', requireAuth, async (req, res) => {
 
 app.get('/orders/:id', requireAuth, async (req, res) => {
   try {
-// Reject malformed order IDs.
+
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({
         error: 'Invalid order id'
       });
     }
 
-// Find the requested order.
     const order = await Order.findById(req.params.id);
 
     if (!order) {
@@ -567,7 +587,6 @@ app.get('/orders/:id', requireAuth, async (req, res) => {
       });
     }
 
-// Only the owner may view this order.
     if (order.userId.toString() !== req.userId) {
       return res.status(404).json({
         error: 'Order not found'
