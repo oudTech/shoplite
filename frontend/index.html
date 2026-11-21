@@ -10,6 +10,9 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">
+  Skip to main content
+  </a>
   <header>
     <a href="index.html">ShopLite</a>
 
@@ -43,18 +46,20 @@
   </header>
 
   <div class="toolbar">
-    <input
-      type="search"
-      id="search-input"
-      placeholder="search-product"
-    >
+    <label for="search-input">Search products</label>
+<input
+  type="search"
+  id="search-input"
+  placeholder="Search products..."
+>
 
-    <select id="category-select">
+<label for="category-select">Filter by category</label>
+<select id="category-select">
       <option value="all">All categories</option>
     </select>
   </div>
 
-  <main class="content">
+  <main id="main-content" class="content">
     <section id="product-grid" class="product-grid">
     </section>
   </main>
@@ -62,7 +67,13 @@
   <div id="cart-overlay" class="cart-overlay"></div>
 
   <aside id="cart-panel" class="cart-panel">
-    <button id="cart-close" type="button">X close</button>
+    <button
+  id="cart-close"
+  type="button"
+  aria-label="Close shopping cart"
+>
+  Close cart
+</button>
 
     <h2>your cart</h2>
 
