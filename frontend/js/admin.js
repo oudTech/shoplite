@@ -112,20 +112,28 @@ async function loadProducts() {
       
       const editButton = document.createElement('button');
 
-      editButton.textContent = 'Edit';
-
-      editButton.addEventListener('click', () => {
-        startEditing(product);
-      });
-
+editButton.type = 'button';
+editButton.textContent = 'Edit';
+editButton.setAttribute(
+  'aria-label',
+  `Edit ${product.name}`
+);
+editButton.addEventListener('click', () => {
+  startEditing(product);
+});
       
       const deleteButton = document.createElement('button');
 
-      deleteButton.textContent = 'Delete';
+deleteButton.type = 'button';
+deleteButton.textContent = 'Delete';
+deleteButton.setAttribute(
+  'aria-label',
+  `Delete ${product.name}`
+);
 
       deleteButton.addEventListener('click', () => {
-        deleteProduct(product._id, product.name);
-      });
+  deleteProduct(product._id, product.name, deleteButton);
+});
 
       productItem.append(
         productName,
@@ -272,6 +280,9 @@ productForm.addEventListener('submit', async (event) => {
   const method = isEditing ? 'PUT' : 'POST';
 
   saveProductButton.disabled = true;
+  saveProductButton.textContent = isEditing
+    ? 'Updating...'
+    : 'Creating...';
 
   try {
     const response = await fetch(url, {
@@ -303,8 +314,11 @@ productForm.addEventListener('submit', async (event) => {
     formMessage.textContent = error.message;
 
   } finally {
-    saveProductButton.disabled = false;
-  }
+  saveProductButton.disabled = false;
+  saveProductButton.textContent = isEditing
+    ? 'Update Product'
+    : 'Create Product';
+}
 });
 
 
@@ -351,7 +365,7 @@ cancelEditButton.addEventListener('click', () => {
 
 
 
-async function deleteProduct(productId, productName) {
+async function deleteProduct(productId, productName, deleteButton) {
   const confirmed = window.confirm(
     `Are you sure you want to delete "${productName}"?`
   );
@@ -359,6 +373,9 @@ async function deleteProduct(productId, productName) {
   if (!confirmed) {
     return;
   }
+
+  deleteButton.disabled = true;
+deleteButton.textContent = 'Deleting...';
 
   try {
     const response = await fetch(
@@ -388,9 +405,13 @@ async function deleteProduct(productId, productName) {
     await loadProducts();
 
   } catch (error) {
-    formMessage.textContent = error.message;
-  }
+  formMessage.textContent = error.message;
+} finally {
+  deleteButton.disabled = false;
+  deleteButton.textContent = 'Delete';
 }
+}
+
 
 
 

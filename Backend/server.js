@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 
 
 
+
 function validateProduct(body) {
   if (
     !body ||
@@ -49,7 +50,7 @@ function validateProduct(body) {
     return 'request body must be a JSON object';
   }
 
-  const { name, price } = body;
+  const { name, price, category, image, stock } = body;
 
   if (
     typeof name !== 'string' ||
@@ -62,9 +63,34 @@ function validateProduct(body) {
   if (
     typeof price !== 'number' ||
     !Number.isFinite(price) ||
-    price <= 0
+    price < 0.01
   ) {
-    return 'price must be a positive number';
+    return 'price must be at least 0.01';
+  }
+
+  if (
+    category !== undefined &&
+    typeof category !== 'string'
+  ) {
+    return 'category must be a string';
+  }
+
+  if (
+    image !== undefined &&
+    typeof image !== 'string'
+  ) {
+    return 'image must be a string';
+  }
+
+  if (
+    stock !== undefined &&
+    (
+      typeof stock !== 'number' ||
+      !Number.isInteger(stock) ||
+      stock < 0
+    )
+  ) {
+    return 'stock must be a non-negative integer';
   }
 
   return null;
@@ -112,11 +138,13 @@ app.post('/signup', async (req, res) => {
 
   const normalizedEmail = email.trim().toLowerCase();
 
-  if (!normalizedEmail.includes('@')) {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(normalizedEmail)) {
     return res.status(400).json({
       error: 'Please provide a valid email address'
     });
-  }
+}
 
 
   if (typeof password !== 'string' || !password) {
@@ -186,8 +214,18 @@ app.post('/login', async (req, res) => {
 
   const normalizedEmail = email.trim().toLowerCase();
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(normalizedEmail)) {
+    return res.status(400).json({
+      error: 'Please provide a valid email address'
+    });
+  }
+
   try {
-    const user = await User.findOne({ email: normalizedEmail });
+    const user = await User.findOne({
+        email: normalizedEmail
+    });
 
 
     if (!user) {

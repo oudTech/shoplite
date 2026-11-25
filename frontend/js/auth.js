@@ -84,9 +84,17 @@ if (isAuthPage) {
     const validationError = validateCredentials(email, password);
 
     if (validationError) {
-      signupError.textContent = validationError;
-      return;
-    }
+  signupError.textContent = validationError;
+
+  const invalidField = !email
+    ? document.getElementById('signup-email')
+    : !password
+      ? document.getElementById('signup-password')
+      : document.getElementById('signup-email');
+
+  invalidField.focus();
+  return;
+}
 
     signupError.textContent = '';
     setButtonLoading(
@@ -163,9 +171,17 @@ if (isAuthPage) {
     const validationError = validateCredentials(email, password);
 
     if (validationError) {
-      loginError.textContent = validationError;
-      return;
-    }
+  loginError.textContent = validationError;
+
+  const invalidField = !email
+    ? document.getElementById('login-email')
+    : !password
+      ? document.getElementById('login-password')
+      : document.getElementById('login-email');
+
+  invalidField.focus();
+  return;
+}
 
     loginError.textContent = '';
     setButtonLoading(loginButton, true, 'Login', 'Logging in...');

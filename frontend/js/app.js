@@ -26,7 +26,13 @@ function createProductCard(product) {
     <p class="category">${product.category}</p>
     <p class="price">${formatPrice(product.price)}</p>
 
-    <button class="add-to-cart-btn">Add to Cart</button>
+    <button
+  type="button"
+  class="add-to-cart-btn"
+  aria-label="Add ${product.name} to cart"
+>
+  Add to Cart
+</button>
   `;
 
   const image = card.querySelector("img");
@@ -131,7 +137,11 @@ async function loadProducts() {
 }
 
 async function init() {
-  productGrid.innerHTML = `<p class="loading-state">Loading products...</p>`;
+  productGrid.innerHTML = `
+  <p class="loading-state" role="status" aria-live="polite">
+    Loading products...
+  </p>
+`;
   try {
     PRODUCTS = await loadProducts();
     loadCart();
@@ -140,7 +150,11 @@ async function init() {
     renderCart();
   } catch (error) {
     console.error("Failed to load products:", error);
-    productGrid.innerHTML = `<p class="error-state">Couldn't load products. Check that the server is running, then reload.</p>`;
+    productGrid.innerHTML = `
+  <p class="error-state" role="alert">
+    Couldn't load products. Check that the server is running, then reload.
+  </p>
+`;
   }
 }
 

@@ -8,7 +8,7 @@ const checkoutTotal = document.getElementById("checkout-total");
 const placeOrderButton = document.getElementById("place-order");
 
 const formatCheckoutPrice = (amount) =>
-  `₦${amount.toLocaleString("en-NG")}`;
+  `\u20A6${amount.toLocaleString("en-NG")}`;
 
 function showCheckoutMessage(message) {
   checkoutMessage.textContent = message;
@@ -41,8 +41,8 @@ function renderCheckoutSummary() {
     const lineSubtotal = product.price * item.quantity;
 
     line.textContent =
-      `${product.name} × ${item.quantity} — ` +
-      formatCheckoutPrice(lineSubtotal);
+  `${product.name} \u00D7 ${item.quantity} \u2014 ` +
+  formatCheckoutPrice(lineSubtotal);
 
     checkoutItems.appendChild(line);
   }
@@ -60,8 +60,12 @@ async function initCheckout() {
     const response = await fetch(`${API_BASE_URL}/products`);
 
     if (!response.ok) {
-      throw new Error("Could not load products. Please try again.");
-    }
+  if (response.status === 401) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
+  throw new Error(data.error || "Could not place your order.");
+}
 
     PRODUCTS = await response.json();
     loadCart();

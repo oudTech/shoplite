@@ -4,11 +4,15 @@ const cartOverlay = document.getElementById("cart-overlay");
 function openCart() {
   cartPanel.classList.add("open");
   cartOverlay.classList.add("open");
+
+  document.getElementById("cart-close").focus();
 }
 
 function closeCart() {
   cartPanel.classList.remove("open");
   cartOverlay.classList.remove("open");
+
+  document.getElementById("cart-open").focus();
 }
 
 document.getElementById("cart-open").addEventListener("click", openCart);
@@ -26,12 +30,31 @@ function createCartLine(line) {
       <strong>${product.name}</strong>
       <div>$${product.price.toFixed(2)} each</div>
       <div>
-        <button data-action="decrease" data-id="${product._id}">-</button>
-        <span>${line.quantity}</span>
-        <button data-action="increase" data-id="${product._id}">+</button>
+        <button
+  type="button"
+  data-action="decrease"
+  data-id="${product._id}"
+  aria-label="Decrease quantity of ${product.name}"
+>-</button>
+
+<span>${line.quantity}</span>
+
+<button
+  type="button"
+  data-action="increase"
+  data-id="${product._id}"
+  aria-label="Increase quantity of ${product.name}"
+>+</button>
       </div>
       <div>Line total: $${(product.price * line.quantity).toFixed(2)}</div>
-      <button data-action="remove" data-id="${product._id}">Remove</button>
+      <button
+  type="button"
+  data-action="remove"
+  data-id="${product._id}"
+  aria-label="Remove ${product.name} from cart"
+>
+  Remove
+</button>
     </div>
   `;
   return el;
